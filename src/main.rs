@@ -1,35 +1,12 @@
+mod cli;
+
+use cli::{Cli, CliCommand, Parser};
+
 use std::io;
 use std::io::Write;
 use std::process::{Child, Command, ExitCode, ExitStatus, Stdio};
 
-use clap::{Parser, Subcommand};
-
 macro_rules! tmux{($($arg:expr),+)=>{{let mut z=Command::new("tmux");$(z.arg($arg);)*z}}}
-
-#[derive(Parser)]
-#[command(author, about, long_about = None)]
-pub struct Cli {
-    #[command(subcommand)]
-    pub command: Option<CliCommand>,
-
-    /// Attaches to this target when no command is specified.
-    pub attach_target: Option<String>,
-}
-
-#[derive(Subcommand)]
-pub enum CliCommand {
-    /// List tmux sessions.
-    #[command(alias = "ls")]
-    List,
-
-    /// Detaches from the current tmux session.
-    #[command(alias = "d")]
-    Detach,
-
-    /// Kills a tmux session. Specify a target or pick one with fzf.
-    #[command(alias = "k")]
-    Kill { target_session: Option<String> },
-}
 
 fn has_session(session: &str) -> io::Result<bool> {
     Ok(tmux!("has", "-t", session).output()?.status.success())
