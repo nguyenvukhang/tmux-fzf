@@ -1,3 +1,5 @@
+//! All interactions with clap.rs.
+
 pub(crate) use clap::Parser;
 
 #[derive(Parser)]
