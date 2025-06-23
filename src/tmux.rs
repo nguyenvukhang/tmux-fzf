@@ -7,7 +7,11 @@ macro_rules! tmux{($($arg:expr),+)=>{{let mut z=std::process::Command::new("tmux
 
 /// List sessions.
 pub fn ls() -> Command {
-    tmux!("ls")
+    tmux!(
+        "ls",
+        "-F",
+        "#S: #{session_windows} windows (created #{t:session_created}) #{?session_attached, (attached),}"
+    )
 }
 
 /// Create a new session.

@@ -18,6 +18,13 @@ pub enum CliCommand {
     #[command(alias = "ls")]
     List,
 
+    /// Attaches to a tmux session.
+    #[command(alias = "a")]
+    Attach {
+        #[arg(short = 't')]
+        target: String,
+    },
+
     /// Detaches from the current tmux session.
     #[command(alias = "d")]
     Detach,

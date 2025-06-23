@@ -9,16 +9,19 @@ use std::io::Write;
 use std::process::{Child, Command, ExitCode, Stdio};
 
 fn spawn_fzf() -> io::Result<Child> {
-    Command::new("fzf")
-        .arg("-0")
-        .stdin(Stdio::piped())
-        .stdout(Stdio::piped())
-        .spawn()
+    let mut fzf = Command::new("fzf");
+
+    // If there is no match for the initial query (--query),
+    // do not start interactive finder and exit immediately
+    fzf.arg("-0");
+
+    fzf.stdin(Stdio::piped()).stdout(Stdio::piped()).spawn()
 }
 
 fn handle_command(command: CliCommand) -> io::Result<ExitCode> {
     match command {
         CliCommand::List => send(tmux::ls()),
+        CliCommand::Attach { target } => tmux::attach(&target),
         CliCommand::Detach => tmux::detach(),
         CliCommand::Kill { target_session } => {
             if let Some(v) = target_session {
